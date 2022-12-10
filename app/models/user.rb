@@ -78,4 +78,9 @@ class User < ApplicationRecord
   def allow_liked_event_notification?
     notification_timings.liked_event.present?
   end
+
+  def not_woman?
+    return false if woman?
+    true
+  end
 end
