@@ -80,7 +80,6 @@ class User < ApplicationRecord
   end
 
   def not_woman?
-    return false if woman?
-    true
+    woman? ? false : true
   end
 end
