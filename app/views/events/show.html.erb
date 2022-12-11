@@ -45,6 +45,9 @@
         </div>
         <div class="card-body">
           <%= simple_format @event.content %>
+          <% if @event.only_woman? %>
+            <p class="help-block">※女性限定イベントです</p>
+          <% end %>
         </div>
       </div>
     </div>
@@ -84,21 +87,23 @@
           <hr />
           <div class="text-center">
             <% if logged_in? %>
-              <% if !current_user.owner?(@event) %>
-                <% if current_user.attend?(@event) %>
-                  <%= link_to 'キャンセルする',
-                              event_attendance_url(@event),
-                              class: 'btn btn-primary',
-                              method: :delete,
-                              data: { confirm: 'キャンセルします' }
-                  %>
-                <% else %>
-                  <%= link_to 'このもくもく会に参加する',
-                              event_attendance_url(@event),
-                              class: 'btn btn-primary',
-                              method: :post,
-                              data: { confirm: '申し込みます' }
-                  %>
+              <% unless current_user.not_woman? and @event.only_woman? %>
+                <% if !current_user.owner?(@event) %>
+                  <% if current_user.attend?(@event) %>
+                    <%= link_to 'キャンセルする',
+                                event_attendance_url(@event),
+                                class: 'btn btn-primary',
+                                method: :delete,
+                                data: { confirm: 'キャンセルします' }
+                    %>
+                  <% else %>
+                    <%= link_to 'このもくもく会に参加する',
+                                event_attendance_url(@event),
+                                class: 'btn btn-primary',
+                                method: :post,
+                                data: { confirm: '申し込みます' }
+                    %>
+                  <% end %>
                 <% end %>
               <% end %>
             <% end %>
@@ -108,12 +113,12 @@
       <div class="card mb-3">
         <div class="card-header">
           <i class="bi bi-people"></i>
-          参加者（<%= @event.attendees.size %>人）
+            参加者（<%= @event.attendees.size %>人）
         </div>
         <div class="card-body">
-           <ul class="list-unstyled">
-             <%= render partial: 'events/attendee', collection: @event.attendees %>
-           </ul>
+          <ul class="list-unstyled">
+            <%= render partial: 'events/attendee', collection: @event.attendees %>
+          </ul>
         </div>
       </div>
 
